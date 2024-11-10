@@ -1,26 +1,55 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Shopcontext } from "../context/Shopcontext";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import Title from "../components/Title";
 import Productitem from "../components/Productitem";
 import Navbaar from "../components/Navbaar";
 import Footer from "../components/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchproductbycategory,
+  fetchproducts,
+  searchproduct,
+} from "../Slices/Shopeslice";
 const Collection = () => {
-  const { product } = useContext(Shopcontext);
+  const { products, product_by_category, searchproducts } = useSelector(
+    (state) => state.shop
+  );
+  const dispatch = useDispatch();
+
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
-  const [filterproduct, setfilterproduct] = useState([]);
   const [category, setcategory] = useState([]);
   const [search, setsearch] = useState("");
-  const searchfilterproduct = () => {
-    let productcopy = product.products;
-    if (search) {
-      productcopy = productcopy.filter((item) =>
-        item.title.toLowerCase().includes(search.toLowerCase())
-      );
+
+  useEffect(() => {
+    dispatch(fetchproducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (category == "All") {
+      dispatch(fetchproducts());
     }
-    setfilterproduct(productcopy);
+    if (category.length > 0) {
+      dispatch(fetchproductbycategory(category));
+    } else if (search.trim().length === 0) {
+      dispatch(fetchproducts());
+    }
+  }, [category, dispatch, search]);
+
+  useEffect(() => {
+    if (search.trim().length > 0) {
+      dispatch(searchproduct(search));
+    } else if (category.length === 0) {
+      dispatch(fetchproducts());
+    } else {
+      dispatch(fetchproducts());
+    }
+  }, [search, dispatch, category]);
+
+  const toggleCategories = () => {
+    setIsCategoriesVisible(!isCategoriesVisible);
   };
+
   const categorytog = (e) => {
     const value = e.target.value;
     setcategory((prev) =>
@@ -29,25 +58,18 @@ const Collection = () => {
         : [...prev, value]
     );
   };
-  const applayfilter = () => {
-    let productcopy = product.products;
-    if (category.length > 0) {
-      productcopy = productcopy.filter((item) =>
-        category.includes(item.category)
-      );
-    }
-    setfilterproduct(productcopy);
-  };
-  const toggleCategories = () => {
-    setIsCategoriesVisible(!isCategoriesVisible);
-  };
 
-  useEffect(() => {
-    applayfilter();
-  }, [category]);
-  useEffect(() => {
-    searchfilterproduct();
-  }, [search]);
+  const handleSearchBlur = () => {
+    dispatch(fetchproducts());
+    filterproduct = products; // Fetch all products if search is empty
+  };
+  const filterproduct =
+    searchproducts.length > 0
+      ? searchproducts
+      : product_by_category.length > 0
+      ? product_by_category
+      : products;
+
   return (
     <div>
       <Navbaar />
@@ -70,6 +92,17 @@ const Collection = () => {
           >
             <p className="mb text-sm font-medium">CATEGORIES</p>
             <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+              <p className="flex gap-2">
+                <input
+                  className="w-3"
+                  type="checkbox"
+                  defaultChecked
+                  value={"All"}
+                  name="cat"
+                  onChange={categorytog}
+                />
+                All
+              </p>
               <p className="flex gap-2">
                 <input
                   className="w-3"
@@ -113,6 +146,8 @@ const Collection = () => {
                 placeholder="search..."
                 className="text-xl text-black  hover:bg-gray-100 rounded-lg"
                 onChange={(e) => setsearch(e.target.value)}
+                value={search}
+                onBlur={handleSearchBlur}
               ></input>
             </div>
           </div>
@@ -121,7 +156,7 @@ const Collection = () => {
               <Productitem
                 key={index}
                 id={item.id}
-                img={item.img}
+                img={item.imageUrl}
                 title={item.title}
                 price={item.price}
                 category={item.category}

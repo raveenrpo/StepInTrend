@@ -1,12 +1,30 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Shopcontext } from "../context/Shopcontext";
+import { logout, selectAuthStatus } from "../Slices/Authlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchcart } from "../Slices/Cartslice";
 const Navbaar = ({ size }) => {
   const nav = useNavigate();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectAuthStatus);
+  const { cartitems } = useSelector((state) => state.cart);
   const [isOpen, setIsOpen] = useState(false);
-  const { cartItems } = useContext(Shopcontext);
-  const userJson = localStorage.getItem("user");
-  const user = userJson ? JSON.parse(userJson) : null;
+  // const { cartItems } = useContext(Shopcontext);
+  // const userJson = localStorage.getItem("user");
+  // const user = userJson ? JSON.parse(userJson) : null;
+  const user = localStorage.getItem("user");
+
+  const handlelogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    localStorage.removeItem("id");
+    nav("/signin");
+  };
+  useEffect(() => {
+    dispatch(fetchcart());
+  }, []);
   return (
     <div className="flex items-center justify-between py-5 px-10 font-medium ">
       {/* <img src="" alt="" /> */}
@@ -41,15 +59,12 @@ const Navbaar = ({ size }) => {
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
             <div className="flex flex-col gap-2 w-36 py-1 px-10 bg-slate-10 text-gray-500 rounded">
               <p className="cursor-pointer hover:text-black pl-14 pt-1 text-xl">
-                {user ? user.name : "Guest"}
+                {user ? user : "Guest"}
               </p>
               {user ? (
                 <p
                   className="cursor-pointer hover:text-red-600 pl-14 pt-1 text-xl"
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    nav("/signin");
-                  }}
+                  onClick={handlelogout}
                 >
                   Logout
                 </p>
@@ -66,7 +81,7 @@ const Navbaar = ({ size }) => {
         <Link to="/cart" className="relative flex items-center">
           <i className="fa-solid fa-cart-shopping text-gray-700 text-2xl"></i>{" "}
           <p className="absolute -top-1 -right-1 w-4 h-4 text-center leading-4 bg-red-500 text-white rounded-full text-xs">
-            {cartItems.length}
+            {cartitems.length}
           </p>
         </Link>
 

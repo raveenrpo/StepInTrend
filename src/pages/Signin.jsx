@@ -1,42 +1,68 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { json, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../Slices/Authlice";
 const Signin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, token, status } = useSelector((state) => state.auth);
   const [mail, setmail] = useState("");
   const [pass, setpass] = useState("");
+  // const handlesignin = async (e) => {
+  //   e.preventDefault();
+  //   const us = {
+  //     email: mail,
+  //     password: pass,
+  //   };
+  //   try {
+  //     await dispatch(login(us));
+  //     console.log(token);
+  //     // Check if the login was successful
+  //     // if (
+  //     //   actionResult.payload?.token &&
+  //     //   actionResult.payload?.role === "User"
+  //     // ) {
+  //     //   // Store the user info in localStorage
+  //     //   localStorage.setItem("token", actionResult.payload.token);
+  //     //   localStorage.setItem("role", actionResult.payload.role);
+  //     //   localStorage.setItem("id", actionResult.payload.userid);
+  //     //   localStorage.setItem("name", actionResult.payload.userName);
+  //     if (isAuthenticated == true && token != null) {
+  //       localStorage.setItem("user", token.userName);
+  //       localStorage.setItem("token", token.token);
+  //       navigate("/");
+  //     } else {
+  //       alert("Faild to login.Enter valid details or please register");
+  //       navigate("/login");
+  //     }
+  //   } catch (error) {
+  //     alert("faild to login.Please try again");
+  //   }
+  // };
+  // console.log(token);
+
   const handlesignin = async (e) => {
     e.preventDefault();
-    try {
-      const valid = await fetch("http://localhost:4000/users");
-      const users = await valid.json();
-      const user = users.find(
-        (user) => user.email === mail && user.password === pass
-      );
-      if (mail == "admin@123" && pass == 12345) {
-        navigate("/adminhome");
-        alert("Admin logind successfully");
-        return;
-      }
-      if (user.blockStatus == true) {
-        alert(
-          "You cannot login with this account.There is an error in this account,use another one"
-        );
-        navigate("/login");
-        return;
-      }
-      // console.log(user);
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-        navigate("/");
-      } else {
-        alert("Faild to login.Enter valid details or please register");
-        navigate("/login");
-      }
-    } catch (error) {
-      alert("faild to login.Please try again");
-    }
+    const user = {
+      email: mail,
+      password: pass,
+    };
+    await dispatch(login(user));
   };
+
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      localStorage.setItem("user", token.userName);
+      localStorage.setItem("role", token.role);
+      localStorage.setItem("token", token.token);
+      localStorage.setItem("id", token.userid);
+      navigate("/");
+    } else if (status == "failed") {
+      alert("login failed");
+    }
+  }, [isAuthenticated, token, navigate]);
+
   return (
     <div>
       <div>

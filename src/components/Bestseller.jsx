@@ -1,15 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Shopcontext } from "../context/Shopcontext";
+import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import Productitem from "./Productitem";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchproducts } from "../Slices/Shopeslice";
 
 const Bestseller = () => {
-  const { product } = useContext(Shopcontext);
+  const { products } = useSelector((state) => state.shop);
+  const dispatch = useDispatch();
   const [bestseller, setbestseller] = useState([]);
   useEffect(() => {
-    const bestproduct = product.products.filter((item) => item.bestseller);
-    setbestseller(bestproduct.slice(0, 5));
-  }, []);
+    dispatch(fetchproducts());
+  }, [dispatch]);
+  useEffect(() => {
+    // const bestproduct = products.filter((item) => item.bestseller);
+    setbestseller(products.slice(2, 7));
+  }, [products]);
   return (
     <div className="my-10">
       <div className="text-center text-3xl py-8">
@@ -27,7 +32,7 @@ const Bestseller = () => {
           <Productitem
             key={index}
             id={item.id}
-            img={item.img}
+            img={item.imageUrl}
             title={item.title}
             price={item.price}
             category={item.category}

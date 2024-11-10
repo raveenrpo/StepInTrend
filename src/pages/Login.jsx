@@ -1,50 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register } from "../Slices/Authlice";
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isRegistered, registrationMessage, status } = useSelector(
+    (state) => state.auth
+  );
   const [mail, setmail] = useState("");
   const [name, setname] = useState("");
   const [pass, setpass] = useState("");
+  const [phone, setphone] = useState(null);
   const [confirmpassword, setconfirmpassword] = useState("");
+
   const validate = async (e) => {
     e.preventDefault();
 
-    const isvalid =
-      mail.includes("@") && pass.length > 4 && pass === confirmpassword;
-    if (!isvalid) {
-      alert("Enter valid email or password");
+    const isValid = mail.includes("@") && pass === confirmpassword;
+    if (!isValid) {
+      alert("Please enter a valid email and passwords must match.");
       return;
     }
+
+    const newUser = {
+      name: name,
+      phone_no: phone,
+      email: mail,
+      password: pass,
+    };
+
     try {
-      const response = await fetch(`http://localhost:4000/users?email=${mail}`);
-      const users = await response.json();
-      if (users.length > 1) {
-        alert("User already exists");
-        navigate("/signin");
-        return;
+      await dispatch(register(newUser));
+
+      if (isRegistered) {
+        if (registrationMessage == "User Already Exist") {
+          alert("User already exists. Please log in.");
+          navigate("/signin");
+        } else if (registrationMessage == "Registered Successfully") {
+          alert("Registration successful!");
+          navigate("/signin");
+        }
       }
-
-      const newuser = {
-        name: name,
-        email: mail,
-        password: pass,
-        cart: [],
-        blockStatus: false,
-      };
-      await fetch("http://localhost:4000/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newuser),
-      });
-
-      alert("Registration successfull");
-      navigate("/signin");
     } catch (error) {
       console.error("Error:", error);
-      alert("Faild to register.Please try again");
+      alert("Failed to register. Please try again.");
     }
   };
   return (
@@ -61,6 +62,15 @@ const Login = () => {
           onChange={(e) => setname(e.target.value)}
           className="w-full px-3 py-2 border border-gray-800"
           placeholder="Enter your name"
+          required
+        ></input>
+        <input
+          type="text"
+          id="name"
+          value={phone}
+          onChange={(e) => setphone(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-800"
+          placeholder="Enter your Phone no:"
           required
         ></input>
         <input
@@ -97,6 +107,9 @@ const Login = () => {
         >
           Submit
         </button>
+
+        {status === "loading" && <p>Loading...</p>}
+        {status === "failed" && <p>Error: {registrationMessage}</p>}
       </form>
     </div>
   );

@@ -4,13 +4,16 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import ShopcontextProvider from "./context/Shopcontext.jsx";
-
+import { Provider } from "react-redux";
+import store from "./Store/store.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <ShopcontextProvider>
+      {/* <ShopcontextProvider> */}
+      <Provider store={store}>
         <App />
-      </ShopcontextProvider>
+      </Provider>
+      {/* </ShopcontextProvider> */}
     </BrowserRouter>
   </StrictMode>
 );

@@ -1,16 +1,39 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Shopcontext } from "../context/Shopcontext";
+import React, { useEffect, useState } from "react";
 import Title from "../components/Title";
 import { Link } from "react-router-dom";
 import Navbaar from "../components/Navbaar";
 import Footer from "../components/Footer";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchcart,
+  quantity_decrement,
+  quantity_increment,
+  remove_prd_fromcart,
+} from "../Slices/Cartslice";
 const Cart = () => {
-  const { cartItems, currency, delevaryfee, carttotal, deleteitem, quantity } =
-    useContext(Shopcontext);
-  const userJson = localStorage.getItem("user");
+  // const { cartItems, currency, delevaryfee, carttotal, deleteitem, quantity } =
+  //   useContext(Shopcontext);
+  const userid = localStorage.getItem("id");
+  const dispatch = useDispatch();
+  const { cartitems } = useSelector((state) => state.cart);
+  const { currency, deliveryFee } = useSelector((state) => state.shop);
+  useEffect(() => {
+    dispatch(fetchcart());
+  }, [dispatch]);
 
-  const user = JSON.parse(userJson);
+  console.log(cartitems);
+  // const user = JSON.parse(userJson);
+  const inc_qnt = (id) => {
+    dispatch(quantity_increment(id));
+  };
+
+  const dec_qnt = (id) => {
+    dispatch(quantity_decrement(id));
+  };
+
+  const del_item = (id) => {
+    dispatch(remove_prd_fromcart(id));
+  };
 
   return (
     <div>
@@ -19,21 +42,21 @@ const Cart = () => {
         <div className="text-center text-2xl pt-10 border-t">
           <Title text1={"Your "} text2={" Cart"} />
         </div>
-        {cartItems.length === 0 ? (
+        {cartitems.length === 0 ? (
           <div className="text-center mt-10">
             <p>Your cart is empty.</p>
           </div>
         ) : (
           <div className="mt-10">
             <ul className="space-y-4">
-              {cartItems.map((item, index) => (
+              {cartitems.map((item, index) => (
                 <li
                   key={index}
                   className="flex justify-between items-center border-b pb-4 mb-4"
                 >
                   <div className="flex items-center">
                     <img
-                      src={item.img}
+                      src={item.imageUrl}
                       className="w-16 h-16 object-cover mr-4"
                     />
                     <div>
@@ -46,19 +69,19 @@ const Cart = () => {
                   <div className="flex gap-2">
                     <button
                       className="bg-black text-white rounded-lg px-2"
-                      onClick={() => quantity(item, 1)}
+                      onClick={() => inc_qnt(item.productId)}
                     >
                       +
                     </button>
                     <button
                       className="bg-black text-white rounded-lg px-2"
-                      onClick={() => deleteitem(index)}
+                      onClick={() => del_item(item.productId)}
                     >
                       Dlete
                     </button>
                     <button
                       className="bg-black text-white rounded-lg px-2"
-                      onClick={() => quantity(item, -1)}
+                      onClick={() => dec_qnt(item.productId)}
                     >
                       -
                     </button>
@@ -68,18 +91,18 @@ const Cart = () => {
             </ul>
             <div className="flex justify-between mt-10 text-lg ">
               <p>Subtotal:</p>
-              <p>{`${currency}${carttotal()}`}</p>
+              {/* <p>{`${currency}${carttotal()}`}</p> */}
             </div>
             <div className="flex justify-between text-lg ">
               <p>Delivery Fee:</p>
-              <p>{`${currency}${delevaryfee}`}</p>
+              <p>{`${currency}${deliveryFee}`}</p>
             </div>
             <div className="flex justify-between text-xl font-bold mt-4">
               <p>Total:</p>
-              <p>{`${currency}${carttotal() + delevaryfee}`}</p>
+              {/* <p>{`${currency}${carttotal() + deliveryFee}`}</p> */}
             </div>
             <div className="text-center mt-10">
-              <Link to={`/payment/${user.id}`}>
+              <Link to={`/payment/${userid}`}>
                 <button className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
                   Place To Order
                 </button>

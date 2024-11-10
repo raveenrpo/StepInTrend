@@ -6,16 +6,16 @@ import Title from "../components/Title";
 const Payment = () => {
   const nav = useNavigate();
   const { userid } = useParams();
-  const { payment, carttotal, delevaryfee, deletecart, cartItems } =
-    useContext(Shopcontext);
+  // const { payment, carttotal, delevaryfee, deletecart, cartItems } =
+  //   useContext(Shopcontext);
   const [order, setorder] = useState({
     name: "",
     email: "",
     address: "",
     number: "",
     userid: `${userid}`,
-    total: `${carttotal() + delevaryfee}`,
-    cart: cartItems,
+    // total: `${carttotal() + delevaryfee}`,
+    // cart: cartItems,
   });
 
   const handleChange = (e) => {
@@ -36,8 +36,8 @@ const Payment = () => {
       address: "",
       number: "",
       userid: `${userid}`,
-      total: `${carttotal() + delevaryfee}`,
-      cart: cartItems,
+      // total: `${carttotal() + delevaryfee}`,
+      // cart: cartItems,
     });
   };
 

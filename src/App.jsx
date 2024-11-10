@@ -23,21 +23,22 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/product/:productid" element={<Product />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/product/:productid" element={<Product />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cart" element={<Cart />} />{" "}
         <Route path="/payment/:userid" element={<Payment />} />
+        {/*
         <Route path="/adminhome" element={<Adminhome />} />
         <Route path="/adminuser" element={<Adminuser />} />
         <Route path="/admincart/:userid" element={<Admincart />} />
         <Route path="/adminproduct" element={<Adminproduct />} />
         <Route path="/addnewproduct" element={<Addnewproduct />} />
         <Route path="/updateproduct/:item" element={<Updateproduct />} />
-        <Route path="/adminorder/:orderid" element={<Adminorder />} />
+        <Route path="/adminorder/:orderid" element={<Adminorder />} /> */}
       </Routes>
     </div>
   );

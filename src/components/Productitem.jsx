@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { Shopcontext } from "../context/Shopcontext";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Productitem = ({ id, img, title, price, category }) => {
-  const { currency } = useContext(Shopcontext);
+  const { currency } = useSelector((state) => state.shop);
   return (
     <Link to={`/product/${id}`} className="text-gray-700 cursor-pointer">
       <div className="overflow-hidden">
