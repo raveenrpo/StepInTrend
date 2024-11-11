@@ -6,41 +6,11 @@ import { login } from "../Slices/Authlice";
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated, token, status } = useSelector((state) => state.auth);
+  const { isAuthenticated, token, status, registrationMessage } = useSelector(
+    (state) => state.auth
+  );
   const [mail, setmail] = useState("");
   const [pass, setpass] = useState("");
-  // const handlesignin = async (e) => {
-  //   e.preventDefault();
-  //   const us = {
-  //     email: mail,
-  //     password: pass,
-  //   };
-  //   try {
-  //     await dispatch(login(us));
-  //     console.log(token);
-  //     // Check if the login was successful
-  //     // if (
-  //     //   actionResult.payload?.token &&
-  //     //   actionResult.payload?.role === "User"
-  //     // ) {
-  //     //   // Store the user info in localStorage
-  //     //   localStorage.setItem("token", actionResult.payload.token);
-  //     //   localStorage.setItem("role", actionResult.payload.role);
-  //     //   localStorage.setItem("id", actionResult.payload.userid);
-  //     //   localStorage.setItem("name", actionResult.payload.userName);
-  //     if (isAuthenticated == true && token != null) {
-  //       localStorage.setItem("user", token.userName);
-  //       localStorage.setItem("token", token.token);
-  //       navigate("/");
-  //     } else {
-  //       alert("Faild to login.Enter valid details or please register");
-  //       navigate("/login");
-  //     }
-  //   } catch (error) {
-  //     alert("faild to login.Please try again");
-  //   }
-  // };
-  // console.log(token);
 
   const handlesignin = async (e) => {
     e.preventDefault();
@@ -57,11 +27,24 @@ const Signin = () => {
       localStorage.setItem("role", token.role);
       localStorage.setItem("token", token.token);
       localStorage.setItem("id", token.userid);
+      if (token.role === "Admin") {
+        console.log(token.role);
+        navigate("/adminhome");
+        return;
+      } else if (token.error) {
+        alert(token.error);
+      }
+
       navigate("/");
-    } else if (status == "failed") {
-      alert("login failed");
+    } else if (registrationMessage === "User is blocked by admin") {
+      alert("User Is Blocked By Admin");
+      navigate("/login");
+    } else if (status === "failed" && token && token.error) {
+      alert(token.error);
+    } else if (status === "failed") {
+      alert("Incorrect email or password ");
     }
-  }, [isAuthenticated, token, navigate]);
+  }, [isAuthenticated, token, registrationMessage, status, navigate]);
 
   return (
     <div>

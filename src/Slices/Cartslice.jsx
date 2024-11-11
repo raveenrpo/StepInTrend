@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosinstance_cart from "../Axios instance/axiosinstance_cart";
 import { act } from "react";
-const token = localStorage.getItem("token");
-console.log(token);
+// const token = localStorage.getItem("token");
+// console.log(token);
 // export const fetchcart = createAsyncThunk("cart/fetchcart", async () => {
 //   const response = await axios.get(`https://localhost:7082/api/Cart`, {
 //     headers: {

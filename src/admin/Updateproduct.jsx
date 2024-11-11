@@ -2,43 +2,52 @@ import React, { useContext, useState, useEffect } from "react";
 import Title from "../components/Title";
 import { useNavigate, useParams } from "react-router-dom";
 import { Shopcontext } from "../context/Shopcontext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchproductbyid, fetchproducts } from "../Slices/Shopeslice";
 
 const Updateproduct = () => {
   const nav = useNavigate();
+  const dispatch = useDispatch();
   const { item } = useParams();
-  const { product, updateprd, deleteprd } = useContext(Shopcontext);
+  // const { product, updateprd, deleteprd } = useContext(Shopcontext);
+  const { products, product } = useSelector((state) => state.shop);
   const [productdata, setproductdata] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [updatedproduct, setupdatedproduct] = useState({
     title: "",
     img: "",
-    rating: "",
+    discription: "",
     price: "",
     category: "",
   });
 
   useEffect(() => {
-    const fetchproductdata = () => {
-      const foundProduct = product.products.find((pr) => pr.id == item);
-      if (foundProduct) {
-        setproductdata(foundProduct);
-      }
-    };
+    // dispatch(fetchproducts());
+    dispatch(fetchproductbyid(item));
+  }, [dispatch, item]);
 
-    fetchproductdata();
-  }, [item, product.products]);
+  // useEffect(() => {
+  //   const fetchproductdata = () => {
+  //     const foundProduct = product.products.find((pr) => pr.id == item);
+  //     if (foundProduct) {
+  //       setproductdata(foundProduct);
+  //     }
+  //   };
+
+  //   fetchproductdata();
+  // }, [item, product.products]);
 
   useEffect(() => {
-    if (productdata) {
+    if (product) {
       setupdatedproduct({
-        title: productdata.title,
-        img: productdata.img,
-        rating: productdata.rating,
-        price: productdata.price,
-        category: productdata.category,
+        title: product.title,
+        img: product.imageUrl,
+        discription: product.description,
+        price: product.price,
+        category: product.category_Name,
       });
     }
-  }, [productdata]);
+  }, [product]);
 
   const toggleFormVisibility = () => {
     setIsFormVisible(!isFormVisible);
@@ -54,40 +63,40 @@ const Updateproduct = () => {
 
   const handlesubmit = (e) => {
     e.preventDefault();
-    updateprd(updatedproduct, item);
-    console.log(updatedproduct);
+    // updateprd(updatedproduct, item);
+    // console.log(updatedproduct);
     toggleFormVisibility();
   };
 
   const deletesub = () => {
-    deleteprd(item);
+    // deleteprd(item);
     nav("/adminproduct");
   };
 
-  if (!productdata) {
+  if (!product) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <div className="my-10 flex flex-col justify-center md:flex-row gap-10 mb-22">
-        <img
+      <div className="my-10 flex flex-col justify-center items-center md:flex-row gap-10 mb-22">
+        {/* <img
           className="w-full md:max-w-[480px]"
-          src={productdata.img}
+          src={product.imageUrl}
           alt="Product"
-        />
+        /> */}
+        <img className="w-28 md:max-w-[480px]" src={product.imageUrl}></img>
+
         <div className="flex flex-col justify-center items-start gap-6">
           <p className="font-semibold text-lg text-gray-400">
-            <span className="text-2xl text-black">Name:</span>{" "}
-            {productdata.title}
+            <span className="text-2xl text-black">Name:</span> {product.title}
           </p>
           <p className="font-semibold text-lg text-gray-400">
             <span className="text-2xl text-black">Category:</span>{" "}
-            {productdata.category}
+            {product.category_Name}
           </p>
           <p className="font-semibold text-lg text-gray-400">
-            <span className="text-2xl text-black">Price:</span>{" "}
-            {productdata.price}
+            <span className="text-2xl text-black">Price:</span> {product.price}
           </p>
 
           <button
@@ -143,9 +152,9 @@ const Updateproduct = () => {
                 className="w-full ms-2 ps-1 border rounded border-gray-400"
                 type="text"
                 name="rating"
-                value={updatedproduct.rating}
+                value={updatedproduct.discription}
                 onChange={handlechange}
-                placeholder="Rating"
+                placeholder="Discription"
                 required
               />
               <input

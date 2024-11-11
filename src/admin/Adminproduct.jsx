@@ -5,25 +5,35 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Addnewproduct from "./Addnewproduct";
 import Updateproduct from "./Updateproduct";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchproducts, searchproduct } from "../Slices/Shopeslice";
 const Adminproduct = () => {
-  const { product, currency } = useContext(Shopcontext);
+  const dispatch = useDispatch();
+  const { products, currency, searchproducts } = useSelector(
+    (state) => state.shop
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   const [search, setsearch] = useState("");
   const [filterproduct, setfilterproduct] = useState([]);
   const searchfilterproduct = () => {
-    let productcopy = product.products;
+    let productcopy = products;
     if (search) {
-      productcopy = productcopy.filter((item) =>
-        item.title.toLowerCase().includes(search.toLowerCase())
-      );
+      // productcopy = productcopy.filter((item) =>
+      //   item.title.toLowerCase().includes(search.toLowerCase())
+      // );
+      dispatch(searchproduct(search));
     }
     setfilterproduct(productcopy);
   };
   useEffect(() => {
+    dispatch(fetchproducts());
+  }, [dispatch]);
+  useEffect(() => {
     searchfilterproduct();
   }, [search]);
+  console.log([products]);
   return (
     <div>
       <input
@@ -48,13 +58,16 @@ const Adminproduct = () => {
           </button>
         </div>
         <ul className="space-y-4">
-          {filterproduct.map((item, index) => (
+          {products.map((item, index) => (
             <li
               key={index}
               className="flex justify-between items-center border-b pb-4 mb-4"
             >
               <div className="flex items-center">
-                <img src={item.img} className="w-16 h-16 object-cover mr-4" />
+                <img
+                  src={item.imageUrl}
+                  className="w-16 h-16 object-cover mr-4"
+                />
                 <div>
                   <p className="font-semibold">{item.title}</p>
                   <p>{`Price: ${currency}${item.price}`}</p>

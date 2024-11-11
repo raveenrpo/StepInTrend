@@ -3,14 +3,14 @@ import { Shopcontext } from "../context/Shopcontext";
 import Title from "../components/Title";
 
 const Addnewproduct = ({ isOpen, onClose }) => {
-  const { addproduct } = useContext(Shopcontext);
+  // const { addproduct } = useContext(Shopcontext);
   const [product, setproduct] = useState({
     title: "",
-    quantity: 1,
-    img: "",
-    rating: "",
+    description: "",
+    imageUrl: "",
+    stock: 10,
     price: "",
-    category: "",
+    categoryId: "",
   });
 
   const handlechange = (e) => {
@@ -27,10 +27,10 @@ const Addnewproduct = ({ isOpen, onClose }) => {
     setproduct({
       title: "",
       quantity: "",
-      img: "",
-      rating: "",
+      imageUrl: "",
+      description: "",
       price: "",
-      category: "",
+      categoryId: "",
     });
     onClose();
   };
@@ -64,7 +64,7 @@ const Addnewproduct = ({ isOpen, onClose }) => {
             className="ms-2 ps-1 border rounded border-gray-400	"
             type="text"
             name="img"
-            value={product.img}
+            value={product.description}
             onChange={handlechange}
             placeholder="Image URL"
             required
@@ -73,7 +73,7 @@ const Addnewproduct = ({ isOpen, onClose }) => {
             className="ms-2 ps-1 border rounded border-gray-400	"
             type="text"
             name="rating"
-            value={product.rating}
+            value={product.stock}
             onChange={handlechange}
             placeholder="Rating"
             required
@@ -91,7 +91,7 @@ const Addnewproduct = ({ isOpen, onClose }) => {
             type="text"
             className="ms-2 ps-1 border rounded border-gray-400	"
             name="category"
-            value={product.category}
+            value={product.categoryId}
             onChange={handlechange}
             placeholder="Category"
             required

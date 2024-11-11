@@ -3,11 +3,15 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logout, selectAuthStatus } from "../Slices/Authlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchcart } from "../Slices/Cartslice";
+import { HeartIcon } from "@heroicons/react/20/solid";
+import { getwishlist } from "../Slices/Wishlist";
+
 const Navbaar = ({ size }) => {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectAuthStatus);
   const { cartitems } = useSelector((state) => state.cart);
+  const { Wishlist } = useSelector((state) => state.wish);
   const [isOpen, setIsOpen] = useState(false);
   // const { cartItems } = useContext(Shopcontext);
   // const userJson = localStorage.getItem("user");
@@ -24,6 +28,9 @@ const Navbaar = ({ size }) => {
   };
   useEffect(() => {
     dispatch(fetchcart());
+  }, []);
+  useEffect(() => {
+    dispatch(getwishlist());
   }, []);
   return (
     <div className="flex items-center justify-between py-5 px-10 font-medium ">
@@ -42,6 +49,7 @@ const Navbaar = ({ size }) => {
           <p class="text-lg">Collection</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
         </NavLink>
+
         <NavLink to="/about" className="flex flex-col items-center gap-1">
           <p class="text-lg">About</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
@@ -83,6 +91,16 @@ const Navbaar = ({ size }) => {
           <p className="absolute -top-1 -right-1 w-4 h-4 text-center leading-4 bg-red-500 text-white rounded-full text-xs">
             {cartitems.length}
           </p>
+        </Link>
+        <Link to="/wishlist">
+          {" "}
+          <button className="text-2xl text-red-500">
+            <HeartIcon
+              className={`w-6 h-6 ${
+                Wishlist.length > 0 ? "text-red-500" : "text-gray-300"
+              } transition-colors`}
+            />
+          </button>
         </Link>
 
         <div>

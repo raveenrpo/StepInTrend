@@ -18,6 +18,7 @@ import Admincart from "./admin/Admincart";
 import Addnewproduct from "./admin/Addnewproduct";
 import Updateproduct from "./admin/Updateproduct";
 import Adminorder from "./admin/Adminorder";
+import Wish_List from "./pages/Wish_List";
 const App = () => {
   return (
     <div>
@@ -31,13 +32,14 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/cart" element={<Cart />} />{" "}
         <Route path="/payment/:userid" element={<Payment />} />
-        {/*
+        <Route path="/wishlist" element={<Wish_List />} />
         <Route path="/adminhome" element={<Adminhome />} />
         <Route path="/adminuser" element={<Adminuser />} />
-        <Route path="/admincart/:userid" element={<Admincart />} />
         <Route path="/adminproduct" element={<Adminproduct />} />
-        <Route path="/addnewproduct" element={<Addnewproduct />} />
         <Route path="/updateproduct/:item" element={<Updateproduct />} />
+        {/*
+        <Route path="/admincart/:userid" element={<Admincart />} />
+        <Route path="/addnewproduct" element={<Addnewproduct />} />
         <Route path="/adminorder/:orderid" element={<Adminorder />} /> */}
       </Routes>
     </div>

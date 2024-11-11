@@ -61,13 +61,12 @@ const authSlice = createSlice({
       state.status = "succeeded"; // Registration succeeded
       state.isRegistered = true; // Mark as registered
       state.registrationMessage = action.payload;
-      console.log(action.payload); // Store success message
+      // console.log(action.payload); // Store success message
     });
     builder.addCase(register.rejected, (state, action) => {
       state.status = "failed"; // Registration failed
       state.isRegistered = false; // Mark as not registered
-      state.registrationMessage =
-        action.payload?.message || action.error.message; // Store error message
+      state.registrationMessage = action.payload || action.error.message; // Store error message
     });
 
     builder.addCase(login.pending, (state) => {
@@ -83,8 +82,8 @@ const authSlice = createSlice({
       state.status = "failed";
       state.token = null;
       state.isAuthenticated = false;
-      state.registrationMessage =
-        action.payload?.message || action.error.message; // Store error message
+      state.registrationMessage = action.payload;
+      console.log(action.payload); // Store error message
     });
   },
 });

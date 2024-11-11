@@ -3,20 +3,27 @@ import { Shopcontext } from "../context/Shopcontext";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getallusers } from "../Slices/Adminslice";
 
 const Adminuser = () => {
-  const { usercount, toblock, tounblock, product } = useContext(Shopcontext);
+  // const { usercount, toblock, tounblock, product } = useContext(Shopcontext);
+  const dispatch = useDispatch();
+  const { users } = useSelector((state) => state.admin);
   const [orderIds, setOrderIds] = useState([]);
   const nav = useNavigate();
 
-  const fetchOrderData = () => {
-    const ids = product.order.map((item) => item.userid);
-    setOrderIds(ids);
-  };
-
   useEffect(() => {
-    fetchOrderData();
-  }, [product.order]);
+    dispatch(getallusers());
+  }, [dispatch]);
+  // const fetchOrderData = () => {
+  //   const ids = product.order.map((item) => item.userid);
+  //   setOrderIds(ids);
+  // };
+
+  // useEffect(() => {
+  //   fetchOrderData();
+  // }, [product.order]);
 
   return (
     <div>
@@ -52,12 +59,12 @@ const Adminuser = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {usercount.map((item) => (
+              {users.map((item) => (
                 <tr key={item.id}>
                   <td className="px-6 py-4">{item.id}</td>
                   <td className="px-6 py-4">{item.name}</td>
                   <td className="px-6 py-4">{item.email}</td>
-                  <td className="px-6 py-4">
+                  {/* <td className="px-6 py-4">
                     {orderIds.includes(item.id) ? (
                       <button
                         className="px-8 py-1 bg-yellow-300 rounded-lg"
@@ -73,26 +80,26 @@ const Adminuser = () => {
                         {item.cart.length}
                       </button>
                     )}
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4">
-                    {item.blockStatus ? (
+                    {item.isblocked ? (
                       <button
                         className="px-8 py-1 bg-gray-500 rounded-lg"
-                        onClick={() => tounblock(item.id)}
+                        // onClick={() => tounblock(item.id)}
                       >
                         UnBlock
                       </button>
                     ) : (
                       <button
                         className="px-8 py-1 bg-teal-500  rounded-lg"
-                        onClick={() => toblock(item.id)}
+                        // onClick={() => toblock(item.id)}
                       >
                         Block
                       </button>
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    {item.blockStatus ? (
+                    {item.isblocked ? (
                       <p className="text-red-600 text-xl">Blocked</p>
                     ) : (
                       <p className="text-green-600 text-xl">Active</p>
