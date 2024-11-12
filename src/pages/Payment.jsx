@@ -1,21 +1,28 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Shopcontext } from "../context/Shopcontext";
 import Title from "../components/Title";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchcart } from "../Slices/Cartslice";
 
 const Payment = () => {
   const nav = useNavigate();
+  const dispatch = useDispatch();
   const { userid } = useParams();
+  const { cartitems } = useSelector((state) => state.cart);
+  const { deliveryFee } = useSelector((state) => state.shop);
+  const { orderid } = useSelector((state) => state.order);
+  useEffect(() => {
+    dispatch(fetchcart());
+  }, [dispatch]);
+  const calctotal = cartitems.reduce((t, v) => t + v.price * v.quantity, 0);
+  const total = calctotal + deliveryFee;
   // const { payment, carttotal, delevaryfee, deletecart, cartItems } =
   //   useContext(Shopcontext);
   const [order, setorder] = useState({
-    name: "",
-    email: "",
-    address: "",
-    number: "",
-    userid: `${userid}`,
-    // total: `${carttotal() + delevaryfee}`,
-    // cart: cartItems,
+    UserName: "",
+    Phone: null,
+    Address: "",
   });
 
   const handleChange = (e) => {
@@ -28,10 +35,18 @@ const Payment = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    payment(order);
+    const inputorder = {
+      UserName: UserName,
+      Phone: Phone,
+      Address: Address,
+      Total: total,
+      Orderstring: orderid,
+      TransactionId: 111,
+    };
+
     deletecart(userid);
     setorder({
-      name: "",
+      UserName: "",
       email: "",
       address: "",
       number: "",
@@ -54,7 +69,7 @@ const Payment = () => {
           <input
             type="text"
             name="name"
-            value={order.name}
+            value={order.UserName}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-800"
             placeholder="Enter your name"
@@ -62,12 +77,12 @@ const Payment = () => {
         </div>
         <div className="w-full">
           <input
-            type="email"
+            type="number"
             name="email"
-            value={order.email}
+            value={order.Phone}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-800"
-            placeholder="Enter your email"
+            placeholder="Enter your Phone no:"
             required
           />
         </div>
@@ -75,21 +90,10 @@ const Payment = () => {
           <input
             type="text"
             name="address"
-            value={order.address}
+            value={order.Address}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-800"
             placeholder="Enter your address"
-            required
-          />
-        </div>
-        <div className="w-full">
-          <input
-            type="number"
-            name="number"
-            value={order.number}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-800"
-            placeholder="Phone no"
             required
           />
         </div>

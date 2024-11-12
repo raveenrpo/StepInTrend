@@ -10,13 +10,18 @@ import {
   quantity_increment,
   remove_prd_fromcart,
 } from "../Slices/Cartslice";
+import { razorordercreation } from "../Slices/Orderslice";
 const Cart = () => {
   // const { cartItems, currency, delevaryfee, carttotal, deleteitem, quantity } =
   //   useContext(Shopcontext);
+
   const userid = localStorage.getItem("id");
   const dispatch = useDispatch();
   const { cartitems } = useSelector((state) => state.cart);
   const { currency, deliveryFee } = useSelector((state) => state.shop);
+
+  const calcsubtotal = cartitems.reduce((t, v) => t + v.price * v.quantity, 0);
+  const calctotal = calcsubtotal + deliveryFee;
   useEffect(() => {
     dispatch(fetchcart());
   }, [dispatch]);
@@ -33,6 +38,10 @@ const Cart = () => {
 
   const del_item = (id) => {
     dispatch(remove_prd_fromcart(id));
+  };
+
+  const ordercreate = (calctotal) => {
+    dispatch(razorordercreation({ price: 129.43 }));
   };
 
   return (
@@ -91,7 +100,7 @@ const Cart = () => {
             </ul>
             <div className="flex justify-between mt-10 text-lg ">
               <p>Subtotal:</p>
-              {/* <p>{`${currency}${carttotal()}`}</p> */}
+              <p>{calcsubtotal}</p>
             </div>
             <div className="flex justify-between text-lg ">
               <p>Delivery Fee:</p>
@@ -99,14 +108,17 @@ const Cart = () => {
             </div>
             <div className="flex justify-between text-xl font-bold mt-4">
               <p>Total:</p>
-              {/* <p>{`${currency}${carttotal() + deliveryFee}`}</p> */}
+              <p>{calctotal}</p>
             </div>
             <div className="text-center mt-10">
-              <Link to={`/payment/${userid}`}>
-                <button className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
-                  Place To Order
-                </button>
-              </Link>
+              {/* <Link to={`/payment/${userid}`}> */}
+              <button
+                className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
+                onClick={() => ordercreate(calctotal)}
+              >
+                Place To Order
+              </button>
+              {/* </Link> */}
             </div>
           </div>
         )}
