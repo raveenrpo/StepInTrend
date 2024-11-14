@@ -1,50 +1,41 @@
 import React, { useContext, useState, useEffect } from "react";
 import Title from "../components/Title";
 import { useNavigate, useParams } from "react-router-dom";
-import { Shopcontext } from "../context/Shopcontext";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchproductbyid, fetchproducts } from "../Slices/Shopeslice";
-
+import { fetchproductbyid } from "../Slices/Shopeslice";
+import { deleteproduct, updateproduct } from "../Slices/Adminslice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Updateproduct = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const { item } = useParams();
-  // const { product, updateprd, deleteprd } = useContext(Shopcontext);
   const { products, product } = useSelector((state) => state.shop);
-  const [productdata, setproductdata] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [updatedproduct, setupdatedproduct] = useState({
     title: "",
-    img: "",
-    discription: "",
+    description: "",
     price: "",
-    category: "",
+    stock: null,
+    imageUrl: null,
+    categoryId: null,
   });
 
   useEffect(() => {
-    // dispatch(fetchproducts());
     dispatch(fetchproductbyid(item));
   }, [dispatch, item]);
 
-  // useEffect(() => {
-  //   const fetchproductdata = () => {
-  //     const foundProduct = product.products.find((pr) => pr.id == item);
-  //     if (foundProduct) {
-  //       setproductdata(foundProduct);
-  //     }
-  //   };
-
-  //   fetchproductdata();
-  // }, [item, product.products]);
+  console.log(product.title);
 
   useEffect(() => {
     if (product) {
       setupdatedproduct({
         title: product.title,
-        img: product.imageUrl,
-        discription: product.description,
+        description: product.description,
         price: product.price,
-        category: product.category_Name,
+        stock: product.stock,
+        imageUrl: product.imageUrl,
+        categoryId: null,
       });
     }
   }, [product]);
@@ -54,22 +45,49 @@ const Updateproduct = () => {
   };
 
   const handlechange = (e) => {
-    const { name, value } = e.target;
-    setupdatedproduct((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type, files } = e.target;
+    if (type == "file") {
+      setupdatedproduct((pre) => ({
+        ...pre,
+        imageUrl: files[0],
+      }));
+    } else {
+      setupdatedproduct((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handlesubmit = (e) => {
     e.preventDefault();
-    // updateprd(updatedproduct, item);
-    // console.log(updatedproduct);
+    const formData = new FormData();
+    formData.append("title", updatedproduct.title);
+    formData.append("description", updatedproduct.description);
+    formData.append("price", updatedproduct.price);
+    formData.append("stock", updatedproduct.stock);
+    formData.append("categoryId", updatedproduct.categoryId);
+    if (updatedproduct.imageUrl) {
+      formData.append("image", updatedproduct.imageUrl);
+    }
+
+    dispatch(updateproduct(item, formData));
+
+    setupdatedproduct({
+      title: "",
+      description: "",
+      price: "",
+      stock: 10,
+      imageUrl: null,
+      categoryId: 1,
+    });
+    toast.success("product is updated");
     toggleFormVisibility();
   };
 
-  const deletesub = () => {
-    // deleteprd(item);
+  const deletesub = (id) => {
+    dispatch(deleteproduct(id));
+    toast.success("Product Deleted Successfully");
     nav("/adminproduct");
   };
 
@@ -79,6 +97,7 @@ const Updateproduct = () => {
 
   return (
     <div>
+      <ToastContainer />
       <div className="my-10 flex flex-col justify-center items-center md:flex-row gap-10 mb-22">
         {/* <img
           className="w-full md:max-w-[480px]"
@@ -107,7 +126,7 @@ const Updateproduct = () => {
           </button>
           <button
             className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={deletesub}
+            onClick={() => deletesub(product.id)}
           >
             Delete Product
           </button>
@@ -126,12 +145,13 @@ const Updateproduct = () => {
             <p className="text-center">
               <Title text1={"Update "} text2={" Product"} />
             </p>
+
             <form
               onSubmit={handlesubmit}
               className="flex flex-col items-center sm:max-w-96 m-auto mt-14 gap-4 text-gray-600"
             >
               <input
-                className="w-full ms-2 ps-1 border rounded border-gray-400"
+                className="ms-2 ps-1 border rounded border-gray-400"
                 type="text"
                 name="title"
                 value={updatedproduct.title}
@@ -140,26 +160,34 @@ const Updateproduct = () => {
                 required
               />
               <input
-                className="w-full ms-2 ps-1 border rounded border-gray-400"
+                className="ms-2 ps-1 border rounded border-gray-400"
                 type="text"
-                name="img"
-                value={updatedproduct.img}
+                name="description"
+                value={updatedproduct.description}
                 onChange={handlechange}
-                placeholder="Image URL"
+                placeholder="Description"
                 required
               />
               <input
-                className="w-full ms-2 ps-1 border rounded border-gray-400"
-                type="text"
-                name="rating"
-                value={updatedproduct.discription}
+                className="ms-2 ps-1 border rounded border-gray-400"
+                type="file"
+                name="imageUrl"
+                // value={updatedproduct.imageUrl}
                 onChange={handlechange}
-                placeholder="Discription"
                 required
               />
               <input
+                className="ms-2 ps-1 border rounded border-gray-400"
+                type="number"
+                name="stock"
+                value={updatedproduct.stock}
+                onChange={handlechange}
+                placeholder="Stock"
+                required
+              />
+              <input
+                className="ms-2 ps-1 border rounded border-gray-400"
                 type="text"
-                className="w-full ms-2 ps-1 border rounded border-gray-400"
                 name="price"
                 value={updatedproduct.price}
                 onChange={handlechange}
@@ -167,12 +195,12 @@ const Updateproduct = () => {
                 required
               />
               <input
-                type="text"
-                className="w-full ms-2 ps-1 border rounded border-gray-400"
-                name="category"
-                value={updatedproduct.category}
+                className="ms-2 ps-1 border rounded border-gray-400"
+                type="number"
+                name="categoryId"
+                value={updatedproduct.categoryId}
                 onChange={handlechange}
-                placeholder="Category"
+                placeholder="Category ID 1-Men 2-women 3-Kids"
                 required
               />
               <button

@@ -5,6 +5,7 @@ import { getwishlist } from "../Slices/Wishlist";
 import Navbaar from "../components/Navbaar";
 import Footer from "../components/Footer";
 import Title from "../components/Title";
+
 const Wish_List = () => {
   const { Wishlist } = useSelector((state) => state.wish);
   const dispatch = useDispatch();

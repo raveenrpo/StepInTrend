@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Title from "../components/Title";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbaar from "../components/Navbaar";
 import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,10 +11,12 @@ import {
   remove_prd_fromcart,
 } from "../Slices/Cartslice";
 import { razorordercreation } from "../Slices/Orderslice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Cart = () => {
   // const { cartItems, currency, delevaryfee, carttotal, deleteitem, quantity } =
   //   useContext(Shopcontext);
-
+  const nav = useNavigate();
   const userid = localStorage.getItem("id");
   const dispatch = useDispatch();
   const { cartitems } = useSelector((state) => state.cart);
@@ -38,15 +40,18 @@ const Cart = () => {
 
   const del_item = (id) => {
     dispatch(remove_prd_fromcart(id));
+    toast.warning("Item Removed From Cart");
   };
 
   const ordercreate = (calctotal) => {
-    dispatch(razorordercreation({ price: 129.43 }));
+    // dispatch(razorordercreation(calctotal));
+    nav("/payment");
   };
 
   return (
     <div>
       <Navbaar />
+      <ToastContainer />
       <div className="p-10">
         <div className="text-center text-2xl pt-10 border-t">
           <Title text1={"Your "} text2={" Cart"} />

@@ -12,7 +12,7 @@ const Adminnavbar = () => {
             </h1>
           </div>
           <nav className="flex-1 mt-4">
-            {/* <ul className="space-y-2">
+            <ul className="space-y-2">
               <Link to={"/adminuser"}>
                 <li className="flex items-center p-4 hover:bg-gray-700">
                   User
@@ -23,7 +23,12 @@ const Adminnavbar = () => {
                   Product
                 </li>
               </Link>
-            </ul> */}
+              <Link to={"/adminorder"}>
+                <li className="flex items-center p-4 hover:bg-gray-700">
+                  Orders
+                </li>
+              </Link>
+            </ul>
           </nav>
         </aside>
       </div>

@@ -1,25 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Shopcontext } from "../context/Shopcontext";
 import { useParams } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getorders } from "../Slices/Adminslice";
+import { Link } from "react-router-dom";
 const Adminorder = () => {
-  const { orderid } = useParams();
-  const { product } = useContext(Shopcontext);
-  const [orderdetails, setorderdetails] = useState([]);
-  const [cartdetails, setcartdetails] = useState([]);
-
-  const fetchproductdata = () => {
-    const order = product.order.find((item) => item.userid === orderid);
-    if (order) {
-      setorderdetails([order]);
-      setcartdetails(order.cart);
-    }
-  };
-
+  const { orders } = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
   useEffect(() => {
-    fetchproductdata();
-  }, [orderid, product.order]);
+    dispatch(getorders());
+  }, [dispatch]);
 
+  const clk = (id) => {};
   return (
     <div>
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -28,41 +20,54 @@ const Adminorder = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                  Id
+                </th>
+                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                  User Name
+                </th>
+                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Order Id
                 </th>
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
-                  User Id
+                  Phone
                 </th>
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
-                  Name
+                  OrderStatus
                 </th>
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
-                  Address
-                </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
-                  Phone no
+                  Order Date
                 </th>
                 <th className="px-24 py-3 text-left text-xl font-medium text-gray-500">
-                  Items
+                  TransactionId
                 </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                <th className="px-24 py-3 text-left text-xl font-medium text-gray-500">
+                  Check More
+                </th>
+
+                {/* <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Total price
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orderdetails.map((item) => (
+              {orders.map((item) => (
                 <tr key={item.id}>
                   <td className="px-6 py-4">{item.id}</td>
-                  <td className="px-6 py-4">{item.userid}</td>
-                  <td className="px-6 py-4">{item.name}</td>
-                  <td className="px-6 py-4">{item.email}</td>
-                  <td className="px-6 py-4">{item.address}</td>
-                  <td className="px-6 py-4">{item.number}</td>
+                  <td className="px-6 py-4">{item.userName}</td>
+                  <td className="px-6 py-4">{item.orderId}</td>
+                  <td className="px-6 py-4">{item.phone}</td>
+                  <td className="px-6 py-4">{item.orderStatus}ordered</td>
+                  <td className="px-6 py-4">{item.orderDate}</td>
+                  <td className="px-6 py-4">{item.transactionId}</td>
                   <td className="px-6 py-4">
+                    <Link to={`/adminorders/${item.id}`}>
+                      <button className="bg-black text-white rounded-lg px-2">
+                        Click Here
+                      </button>
+                    </Link>
+                  </td>
+
+                  {/* <td className="px-6 py-4">
                     <ul>
                       {cartdetails.map((ite) => (
                         <li key={ite.id}>
@@ -72,7 +77,7 @@ const Adminorder = () => {
                       ))}
                     </ul>
                   </td>
-                  <td className="px-6 py-4">{item.total}</td>
+                  <td className="px-6 py-4">{item.total}</td> */}
                 </tr>
               ))}
             </tbody>

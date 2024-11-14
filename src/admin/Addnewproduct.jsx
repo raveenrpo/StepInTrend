@@ -1,43 +1,69 @@
-import React, { useContext, useState } from "react";
-import { Shopcontext } from "../context/Shopcontext";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addproduct } from "../Slices/Adminslice";
 import Title from "../components/Title";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Addnewproduct = ({ isOpen, onClose }) => {
-  // const { addproduct } = useContext(Shopcontext);
-  const [product, setproduct] = useState({
+  const dispatch = useDispatch();
+  const [product, setProduct] = useState({
     title: "",
     description: "",
-    imageUrl: "",
-    stock: 10,
     price: "",
-    categoryId: "",
+    stock: 10,
+    imageUrl: null,
+    categoryId: 1,
   });
 
-  const handlechange = (e) => {
-    const { name, value } = e.target;
-    setproduct((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      setProduct((prev) => ({
+        ...prev,
+        imageUrl: files[0],
+      }));
+    } else {
+      setProduct((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const handlesubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    addproduct(product);
-    setproduct({
+
+    const formData = new FormData();
+    formData.append("title", product.title);
+    formData.append("description", product.description);
+    formData.append("price", product.price);
+    formData.append("stock", product.stock);
+    formData.append("categoryId", product.categoryId);
+    if (product.imageUrl) {
+      formData.append("image", product.imageUrl);
+    }
+
+    dispatch(addproduct(formData));
+    toast.success("Item Added Successfully");
+    setProduct({
       title: "",
-      quantity: "",
-      imageUrl: "",
       description: "",
       price: "",
-      categoryId: "",
+      stock: 10,
+      imageUrl: null,
+      categoryId: 1,
     });
+
     onClose();
   };
+
   if (!isOpen) return null;
+
   return (
     <div className="fixed inset-1 bg-gray-500 bg-opacity-10 flex justify-center items-center ">
-      <div className="bg-gray-400 p-8  rounded-lg w-96 h-96 relative">
+      <ToastContainer />
+      <div className="bg-gray-400 p-8 rounded-lg w-96 h-auto relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-600"
@@ -48,52 +74,59 @@ const Addnewproduct = ({ isOpen, onClose }) => {
           <Title text1={"Add "} text2={" Product"} />
         </p>
         <form
-          onSubmit={handlesubmit}
+          onSubmit={handleSubmit}
           className="flex flex-col items-center sm:max-w-96 m-auto mt-14 gap-4 text-gray-600"
         >
           <input
-            className="ms-2 ps-1 border rounded border-gray-400	"
+            className="ms-2 ps-1 border rounded border-gray-400"
             type="text"
             name="title"
             value={product.title}
-            onChange={handlechange}
+            onChange={handleChange}
             placeholder="Title"
             required
           />
           <input
-            className="ms-2 ps-1 border rounded border-gray-400	"
+            className="ms-2 ps-1 border rounded border-gray-400"
             type="text"
-            name="img"
+            name="description"
             value={product.description}
-            onChange={handlechange}
-            placeholder="Image URL"
+            onChange={handleChange}
+            placeholder="Description"
             required
           />
           <input
-            className="ms-2 ps-1 border rounded border-gray-400	"
-            type="text"
-            name="rating"
+            className="ms-2 ps-1 border rounded border-gray-400"
+            type="file"
+            name="imageUrl"
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ms-2 ps-1 border rounded border-gray-400"
+            type="number"
+            name="stock"
             value={product.stock}
-            onChange={handlechange}
-            placeholder="Rating"
+            onChange={handleChange}
+            placeholder="Stock"
             required
           />
           <input
+            className="ms-2 ps-1 border rounded border-gray-400"
             type="text"
-            className="ms-2 ps-1 border rounded border-gray-400	"
             name="price"
             value={product.price}
-            onChange={handlechange}
+            onChange={handleChange}
             placeholder="Price"
             required
           />
           <input
-            type="text"
-            className="ms-2 ps-1 border rounded border-gray-400	"
-            name="category"
+            className="ms-2 ps-1 border rounded border-gray-400"
+            type="number"
+            name="categoryId"
             value={product.categoryId}
-            onChange={handlechange}
-            placeholder="Category"
+            onChange={handleChange}
+            placeholder="Category ID"
             required
           />
           <button

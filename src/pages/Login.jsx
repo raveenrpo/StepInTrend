@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../Slices/Authlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,20 +38,21 @@ const Login = () => {
 
       if (isRegistered) {
         if (registrationMessage == "User Already Exist") {
-          alert("User already exists. Please log in.");
+          toast.warning("User already exists. Please log in.");
           navigate("/signin");
         } else if (registrationMessage == "Registered Successfully") {
-          alert("Registration successful!");
+          toast.success("Registration successful!");
           navigate("/signin");
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to register. Please try again.");
+      toast.error("Failed to register. Please try again.");
     }
   };
   return (
     <div>
+      <ToastContainer />
       <form className="flex flex-col items-center sm:max-w-96 m-auto mt-14 gap-4 text-gray-600">
         <div className="inline-flex items-center gap-2 mb-2 mt-10">
           <p className="text-3xl">REGISTER</p>

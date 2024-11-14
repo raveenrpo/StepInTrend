@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Navbaar from "../components/Navbaar";
 import { fetchproductbyid } from "../Slices/Shopeslice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { addtocart, fetchcart } from "../Slices/Cartslice";
 import {
   addtowishlist,
@@ -22,8 +24,10 @@ const Product = () => {
   const toggleLike = () => {
     if (isproductinwishlist) {
       dispatch(removefromwishlist(productid));
+      toast.warning("Item Removed From WishList");
     } else {
       dispatch(addtowishlist(productid));
+      toast.success("Item Added To WishList");
     }
   };
 
@@ -34,6 +38,7 @@ const Product = () => {
 
   const add = () => {
     dispatch(addtocart(productid));
+    toast.success("Item Added To CART");
   };
 
   console.log(product);
@@ -41,6 +46,7 @@ const Product = () => {
     <div>
       <Navbaar />
       <div className="my-10 flex flex-col justify-center md:flex-row gap-10 mb-22">
+        <ToastContainer />
         <img className="w-full md:max-w-[480px]" src={product.imageUrl}></img>
 
         <div className="flex flex-col justify-center items-start gap-6">

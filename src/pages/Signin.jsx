@@ -3,6 +3,10 @@ import { json, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../Slices/Authlice";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,26 +33,29 @@ const Signin = () => {
       localStorage.setItem("id", token.userid);
       if (token.role === "Admin") {
         console.log(token.role);
+        toast.success("Admin Loged in");
         navigate("/adminhome");
         return;
       } else if (token.error) {
-        alert(token.error);
+        toast.warning(token.error);
       }
 
       navigate("/");
     } else if (registrationMessage === "User is blocked by admin") {
-      alert("User Is Blocked By Admin");
+      toast.error("User Is Blocked By Admin");
       navigate("/login");
     } else if (status === "failed" && token && token.error) {
-      alert(token.error);
+      toast.error(token.error);
     } else if (status === "failed") {
-      alert("Incorrect email or password ");
+      toast.warning("Incorrect email or password ");
     }
   }, [isAuthenticated, token, registrationMessage, status, navigate]);
 
   return (
     <div>
       <div>
+        <ToastContainer />
+
         <form className="flex flex-col items-center sm:max-w-96 m-auto mt-14 gap-4 text-gray-600">
           <div className="inline-flex items-center gap-2 mb-2 mt-10">
             <p className="text-3xl">Login</p>

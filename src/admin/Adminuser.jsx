@@ -4,8 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getallusers } from "../Slices/Adminslice";
-
+import { blockuser, getallusers, unblockuser } from "../Slices/Adminslice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Adminuser = () => {
   // const { usercount, toblock, tounblock, product } = useContext(Shopcontext);
   const dispatch = useDispatch();
@@ -16,6 +17,17 @@ const Adminuser = () => {
   useEffect(() => {
     dispatch(getallusers());
   }, [dispatch]);
+
+  const toblock = (id) => {
+    dispatch(blockuser(id));
+    toast.success("User Is Blocked Successfully");
+  };
+
+  const tounblock = (id) => {
+    dispatch(unblockuser(id));
+    toast.success("User Is Unblocked Succesfully");
+  };
+
   // const fetchOrderData = () => {
   //   const ids = product.order.map((item) => item.userid);
   //   setOrderIds(ids);
@@ -27,6 +39,7 @@ const Adminuser = () => {
 
   return (
     <div>
+      <ToastContainer />
       <Link to={"/adminhome"}>
         <button className="pt-10 px-11 text-xl">
           <FontAwesomeIcon icon={faArrowLeft} />
@@ -47,9 +60,9 @@ const Adminuser = () => {
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                {/* <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Cart
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Block
                 </th>
@@ -85,14 +98,14 @@ const Adminuser = () => {
                     {item.isblocked ? (
                       <button
                         className="px-8 py-1 bg-gray-500 rounded-lg"
-                        // onClick={() => tounblock(item.id)}
+                        onClick={() => tounblock(item.id)}
                       >
                         UnBlock
                       </button>
                     ) : (
                       <button
                         className="px-8 py-1 bg-teal-500  rounded-lg"
-                        // onClick={() => toblock(item.id)}
+                        onClick={() => toblock(item.id)}
                       >
                         Block
                       </button>
