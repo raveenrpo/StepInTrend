@@ -10,41 +10,49 @@ import {
   fetchproductbycategory,
   fetchproducts,
   searchproduct,
+  productpagination,
 } from "../Slices/Shopeslice";
+
 const Collection = () => {
-  const { products, product_by_category, searchproducts } = useSelector(
-    (state) => state.shop
-  );
+  const { product_by_category, searchproducts, product_by_pagination } =
+    useSelector((state) => state.shop);
   const dispatch = useDispatch();
-
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
-  const [category, setcategory] = useState([]);
-  const [search, setsearch] = useState("");
+  const [category, setCategory] = useState([]);
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
 
-  useEffect(() => {
-    dispatch(fetchproducts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (category == "All") {
-      dispatch(fetchproducts());
+  const getFilteredProducts = () => {
+    if (search.trim().length > 0) {
+      return searchproducts;
     }
-    if (category.length > 0) {
+
+    if (category.length > 0 && !category.includes("All")) {
+      return product_by_category;
+    }
+    return product_by_pagination.length > 0 ? product_by_pagination : [];
+  };
+
+  useEffect(() => {
+    if (category.length === 0 || category.includes("All")) {
+      dispatch(fetchproducts());
+    } else {
       dispatch(fetchproductbycategory(category));
-    } else if (search.trim().length === 0) {
-      dispatch(fetchproducts());
     }
-  }, [category, dispatch, search]);
+  }, [category, dispatch]);
 
   useEffect(() => {
     if (search.trim().length > 0) {
       dispatch(searchproduct(search));
-    } else if (category.length === 0) {
-      dispatch(fetchproducts());
     } else {
       dispatch(fetchproducts());
     }
-  }, [search, dispatch, category]);
+  }, [search, dispatch]);
+
+  useEffect(() => {
+    dispatch(productpagination({ pageno: currentPage, pagesize: pageSize }));
+  }, [currentPage, dispatch]);
 
   const toggleCategories = () => {
     setIsCategoriesVisible(!isCategoriesVisible);
@@ -52,23 +60,34 @@ const Collection = () => {
 
   const categorytog = (e) => {
     const value = e.target.value;
-    setcategory((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
-    );
+
+    if (value === "All") {
+      setCategory(["All"]);
+    } else {
+      setCategory((prev) =>
+        prev.includes(value)
+          ? prev.filter((item) => item !== value)
+          : [...prev, value]
+      );
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
   const handleSearchBlur = () => {
     dispatch(fetchproducts());
-    filterproduct = products; // Fetch all products if search is empty
   };
-  const filterproduct =
-    searchproducts.length > 0
-      ? searchproducts
-      : product_by_category.length > 0
-      ? product_by_category
-      : products;
+
+  const filterproduct = getFilteredProducts();
+
+  const totalPages = 4;
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div>
@@ -96,7 +115,7 @@ const Collection = () => {
                 <input
                   className="w-3"
                   type="checkbox"
-                  defaultChecked
+                  checked={category.includes("All")}
                   value={"All"}
                   name="cat"
                   onChange={categorytog}
@@ -107,6 +126,7 @@ const Collection = () => {
                 <input
                   className="w-3"
                   type="checkbox"
+                  checked={category.includes("Men")}
                   value={"Men"}
                   name="cat"
                   onChange={categorytog}
@@ -117,6 +137,7 @@ const Collection = () => {
                 <input
                   className="w-3"
                   type="checkbox"
+                  checked={category.includes("Women")}
                   value={"Women"}
                   name="cat"
                   onChange={categorytog}
@@ -127,6 +148,7 @@ const Collection = () => {
                 <input
                   className="w-3"
                   type="checkbox"
+                  checked={category.includes("Kids")}
                   value={"Kids"}
                   name="cat"
                   onChange={categorytog}
@@ -145,10 +167,10 @@ const Collection = () => {
                 type="text"
                 placeholder="search..."
                 className="text-xl text-black  hover:bg-gray-100 rounded-lg"
-                onChange={(e) => setsearch(e.target.value)}
+                onChange={handleSearchChange}
                 value={search}
                 onBlur={handleSearchBlur}
-              ></input>
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
@@ -162,6 +184,38 @@ const Collection = () => {
                 category={item.category}
               />
             ))}
+          </div>
+
+          {/* Pagination controls */}
+          <div className="flex justify-center gap-3 mt-6">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 border border-gray-300 rounded"
+            >
+              Previous
+            </button>
+            {[...Array(totalPages)].map((_, index) => {
+              const page = index + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-4 py-2 border border-gray-300 rounded ${
+                    page === currentPage ? "bg-gray-300" : ""
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 border border-gray-300 rounded"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

@@ -1,7 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../Slices/Authlice";
 
 const Adminnavbar = () => {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const clk = () => {
+    dispatch(logout());
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    localStorage.removeItem("token");
+    localStorage.removeItem("id");
+    nav("/signin");
+  };
   return (
     <div>
       <div className="flex h-screen">
@@ -28,6 +40,12 @@ const Adminnavbar = () => {
                   Orders
                 </li>
               </Link>
+              <button
+                className="flex items-center p-4 text-red-500 "
+                onClick={clk}
+              >
+                Log Out
+              </button>
             </ul>
           </nav>
         </aside>

@@ -10,7 +10,7 @@ const Adminorder = () => {
   useEffect(() => {
     dispatch(getorders());
   }, [dispatch]);
-
+  console.log(orders);
   const clk = (id) => {};
   return (
     <div>
@@ -31,9 +31,9 @@ const Adminorder = () => {
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                {/* <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   OrderStatus
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Order Date
                 </th>
@@ -56,7 +56,7 @@ const Adminorder = () => {
                   <td className="px-6 py-4">{item.userName}</td>
                   <td className="px-6 py-4">{item.orderId}</td>
                   <td className="px-6 py-4">{item.phone}</td>
-                  <td className="px-6 py-4">{item.orderStatus}ordered</td>
+                  {/* <td className="px-6 py-4">{item.orderStatus}ordered</td> */}
                   <td className="px-6 py-4">{item.orderDate}</td>
                   <td className="px-6 py-4">{item.transactionId}</td>
                   <td className="px-6 py-4">

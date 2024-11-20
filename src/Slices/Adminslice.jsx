@@ -21,26 +21,15 @@ ${usid}`);
   }
 );
 
-// export const addproduct = createAsyncThunk(
-//   "admin/addproduct",
-//   async (params, { dispatch }) => {
-//     const response = await axiosinstance_cart.post(
-//       `https://localhost:7082/api/Product
-// `,
-//       params
-//     );
-//     dispatch(fetchproducts());
-//     return response.data;
-//   }
-// );
 export const addproduct = createAsyncThunk(
   "admin/addproduct",
   async (params, { dispatch, rejectWithValue }) => {
     try {
-      // Make sure that you're sending the FormData as it is
+      console.log(params);
+      console.log(params.title);
       const response = await axiosinstance_cart.post(
         "https://localhost:7082/api/Product",
-        params, // This should be FormData with the product data (including image)
+        params,
         {
           headers: {
             "Content-Type": "multipart/form-data", // Set the header for multipart form data
@@ -48,12 +37,10 @@ export const addproduct = createAsyncThunk(
         }
       );
 
-      // Fetch the updated product list after adding a new product
       dispatch(fetchproducts());
 
-      return response.data; // Return the response data
+      return response.data;
     } catch (error) {
-      // In case of error, we can return the error message
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -61,17 +48,13 @@ export const addproduct = createAsyncThunk(
 
 export const updateproduct = createAsyncThunk(
   "admin/updateproduct",
-  async (item, params, { dispatch, rejectWithValue }) => {
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
+    console.log("product id" + id);
+    console.log(data);
     try {
       const response = await axiosinstance_cart.put(
-        `https://localhost:7082/api/Product?id=${item}
-`,
-        params,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set the header for multipart form data
-          },
-        }
+        `https://localhost:7082/api/Product/${id}`,
+        data
       );
       dispatch(fetchproducts());
       return response.data;

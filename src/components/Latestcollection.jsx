@@ -2,20 +2,23 @@ import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import Productitem from "./Productitem";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchproducts } from "../Slices/Shopeslice";
+import { fetchproducts, productpagination } from "../Slices/Shopeslice";
 const Latestcollection = () => {
-  const { products } = useSelector((state) => state.shop);
+  const { products, product_by_pagination } = useSelector(
+    (state) => state.shop
+  );
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchproducts());
+    dispatch(productpagination({ pageno: 1, pagesize: 10 }));
   }, [dispatch]);
   // console.log(products);
   // console.log(products);
-
+  console.log(product_by_pagination);
   const [latestproduct, setlatestproduct] = useState([]);
 
   useEffect(() => {
-    setlatestproduct(products.slice(0, 10));
+    // setlatestproduct(products.slice(0, 10));
   }, [products]);
   return (
     <div className="my-10">
@@ -30,7 +33,7 @@ const Latestcollection = () => {
       </div>
       {/* product rendering */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
-        {latestproduct.map((item, index) => (
+        {product_by_pagination.map((item, index) => (
           <Productitem
             key={index}
             id={item.id}

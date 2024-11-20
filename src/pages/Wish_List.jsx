@@ -20,16 +20,24 @@ const Wish_List = () => {
         <div className="text-center text-2xl pt-10 border-t">
           <Title text1={"Your "} text2={" Wish List"} />
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 gap-y-6">
+
+        {/* Gallery grid layout */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-10">
           {Wishlist.map((item, index) => (
-            <Productitem
-              key={index}
-              id={item.productId}
-              img={item.imageUrl}
-              title={item.title}
-              price={item.price}
-              category={item.category_Name}
-            />
+            <div key={index} className="group relative">
+              <Productitem
+                id={item.productId}
+                img={item.imageUrl}
+                title={item.title}
+                price={item.price}
+                category={item.category_Name}
+              />
+              {/* <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex justify-center items-center transition-opacity">
+                <span className="text-white text-lg font-semibold">
+                  View Details
+                </span>
+              </div> */}
+            </div>
           ))}
         </div>
       </div>

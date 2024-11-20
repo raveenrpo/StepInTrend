@@ -70,8 +70,7 @@ const Updateproduct = () => {
     if (updatedproduct.imageUrl) {
       formData.append("image", updatedproduct.imageUrl);
     }
-
-    dispatch(updateproduct(item, formData));
+    dispatch(updateproduct({ id: item, data: formData }));
 
     setupdatedproduct({
       title: "",
@@ -83,6 +82,7 @@ const Updateproduct = () => {
     });
     toast.success("product is updated");
     toggleFormVisibility();
+    nav("/adminproduct");
   };
 
   const deletesub = (id) => {

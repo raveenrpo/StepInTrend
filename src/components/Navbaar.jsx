@@ -17,6 +17,7 @@ const Navbaar = ({ size }) => {
   // const userJson = localStorage.getItem("user");
   // const user = userJson ? JSON.parse(userJson) : null;
   const user = localStorage.getItem("user");
+  const id = localStorage.getItem("id");
 
   const handlelogout = () => {
     dispatch(logout());
@@ -93,7 +94,6 @@ const Navbaar = ({ size }) => {
           </p>
         </Link>
         <Link to="/wishlist">
-          {" "}
           <button className="text-2xl text-red-500">
             <HeartIcon
               className={`w-6 h-6 ${
@@ -101,6 +101,9 @@ const Navbaar = ({ size }) => {
               } transition-colors`}
             />
           </button>
+        </Link>
+        <Link to={`/adminorders/${id}`}>
+          <button>Your Cart</button>
         </Link>
 
         <div>

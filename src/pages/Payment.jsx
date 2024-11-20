@@ -46,9 +46,9 @@ const Payment = () => {
 
   const calctotal = cartitems.reduce((t, v) => t + v.price * v.quantity, 0);
   const total = calctotal + deliveryFee;
-  useEffect(() => {
-    dispatch(razorordercreation(total));
-  }, [total, dispatch]);
+  // useEffect(() => {
+  //   dispatch(razorordercreation(total));
+  // }, [total, dispatch]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setOrderDetails((prevDetails) => ({
@@ -67,7 +67,7 @@ const Payment = () => {
 
     if (orderid) {
       const razorpayOptions = {
-        key: "rzp_test_Y17V5zPrxZRzeY",
+        key: "rzp_test_UvZ01Swg0wVyTG",
         amount: total * 100,
         currency: "INR",
         name: "Step In Trend",
@@ -102,7 +102,7 @@ const Payment = () => {
   const verifyPayment = async (paymentData) => {
     try {
       const response = dispatch(paymentvalidation(paymentData));
-      if (response || payment) {
+      if (response) {
         await placeOrder(paymentData);
       } else {
         toast.error("Payment verification failed.");
@@ -119,7 +119,7 @@ const Payment = () => {
         userName: orderDetails.UserName,
         phone: orderDetails.Phone,
         address: orderDetails.Address,
-        ottal: total,
+        total: total,
         orderstring: orderid,
         transactionId: paymentData.razorpay_payment_id,
       };

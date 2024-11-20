@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Shopcontext } from "../context/Shopcontext";
 import Adminnavbar from "./Adminnavbar";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,8 +7,17 @@ import { fetchproducts } from "../Slices/Shopeslice";
 import { getallusers, getpurchasedprd, getrevenue } from "../Slices/Adminslice";
 const Adminhome = () => {
   const dispatch = useDispatch();
+  const nav = useNavigate();
   const { products } = useSelector((state) => state.shop);
   const { users, purchase, revenue } = useSelector((state) => state.admin);
+  var role = localStorage.getItem("role");
+
+  console.log(role);
+  useEffect(() => {
+    if (role == "User" || role == null || role == undefined) {
+      nav("/login");
+    }
+  }, [role]);
 
   useEffect(() => {
     dispatch(fetchproducts());

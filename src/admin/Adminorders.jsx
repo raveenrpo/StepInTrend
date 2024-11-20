@@ -10,6 +10,7 @@ const Adminorders = () => {
   useEffect(() => {
     dispatch(getorderbyid(id));
   }, [dispatch]);
+  console.log(order);
   return (
     <div>
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -38,9 +39,9 @@ const Adminorders = () => {
                 <th className="px-24 py-3 text-left text-xl font-medium text-gray-500">
                   Order Id
                 </th>
-                <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
+                {/* <th className="px-6 py-3 text-left text-xl font-medium text-gray-500">
                   Order Status
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -55,7 +56,7 @@ const Adminorders = () => {
                     <img src={item.image} width="50px" height="50px"></img>
                   </td>
                   <td className="px-6 py-4">{item.orderId}</td>
-                  <td className="px-6 py-4">{item.orderStatus}Pending</td>
+                  {/* <td className="px-6 py-4">{item.orderStatus}Pending</td> */}
                   {/* <td className="px-6 py-4">
                         <ul>
                           {cartdetails.map((ite) => (

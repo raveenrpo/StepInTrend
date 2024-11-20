@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { act } from "react";
 
 const Product_url = "https://localhost:7082/api/Product";
 
@@ -43,6 +44,16 @@ export const searchproduct = createAsyncThunk(
   }
 );
 
+export const productpagination = createAsyncThunk(
+  "shop/pagination",
+  async (params) => {
+    const response = await axios.get(
+      `https://localhost:7082/api/Product/pagination?pageno=${params.pageno}&pagesize=${params.pagesize}`
+    );
+    return response.data;
+  }
+);
+
 const Shopeslice = createSlice({
   name: "shop",
   initialState: {
@@ -50,6 +61,7 @@ const Shopeslice = createSlice({
     product: [],
     product_by_category: [],
     searchproducts: [],
+    product_by_pagination: [],
     currency: "$",
     deliveryFee: 10,
     loading: false,
@@ -81,6 +93,13 @@ const Shopeslice = createSlice({
       state.searchproducts = action.payload;
     });
     builder.addCase(searchproduct.rejected, (state, action) => {
+      state.error = action.error;
+    });
+    builder.addCase(productpagination.fulfilled, (state, action) => {
+      state.product_by_pagination = action.payload;
+      console.log(action.payload);
+    });
+    builder.addCase(productpagination.rejected, (state, action) => {
       state.error = action.error;
     });
   },

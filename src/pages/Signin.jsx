@@ -24,6 +24,11 @@ const Signin = () => {
     };
     await dispatch(login(user));
   };
+  useEffect(() => {
+    if (localStorage.getItem("role") == "Admin") {
+      navigate("/adminhome");
+    }
+  });
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -54,9 +59,8 @@ const Signin = () => {
   return (
     <div>
       <div>
-        <ToastContainer />
-
         <form className="flex flex-col items-center sm:max-w-96 m-auto mt-14 gap-4 text-gray-600">
+          <ToastContainer />
           <div className="inline-flex items-center gap-2 mb-2 mt-10">
             <p className="text-3xl">Login</p>
             <hr className="border-none h-[1.5px] w-8 bg-gray-800" />

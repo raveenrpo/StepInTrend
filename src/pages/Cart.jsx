@@ -44,7 +44,7 @@ const Cart = () => {
   };
 
   const ordercreate = (calctotal) => {
-    // dispatch(razorordercreation(calctotal));
+    dispatch(razorordercreation(calctotal));
     nav("/payment");
   };
 

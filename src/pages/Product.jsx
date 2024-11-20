@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HeartIcon } from "@heroicons/react/20/solid";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Navbaar from "../components/Navbaar";
 import { fetchproductbyid } from "../Slices/Shopeslice";
@@ -13,6 +13,7 @@ import {
   removefromwishlist,
 } from "../Slices/Wishlist";
 const Product = () => {
+  const nav = useNavigate();
   const { productid } = useParams();
   console.log(productid);
   const { product } = useSelector((state) => state.shop);
@@ -41,6 +42,12 @@ const Product = () => {
     toast.success("Item Added To CART");
   };
 
+  const warn = () => {
+    toast.warning("Please Login");
+    nav("/signin");
+  };
+
+  const user = localStorage.getItem("token");
   console.log(product);
   return (
     <div>
@@ -55,7 +62,7 @@ const Product = () => {
               className={`text-2xl ${
                 isproductinwishlist ? "text-red-500" : "text-gray-300"
               }`}
-              onClick={toggleLike}
+              onClick={user ? toggleLike : warn}
             >
               <HeartIcon
                 className={`w-6 h-6 ${
@@ -71,7 +78,7 @@ const Product = () => {
 
           <button
             className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={add}
+            onClick={user ? add : warn}
           >
             ADD TO CART
           </button>
